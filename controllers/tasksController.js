@@ -84,27 +84,28 @@ const updateTask = async (req, res) => {
 // @route DELETE /tasks
 // @access Public
 const deleteTask = async (req, res) => {
-    const { id } = req.body
+    const { id } = req.body;
+
+    console.log(id);
 
     // Confirm ID provided
     if (!id) {
-        return res.status(400).json({ message: 'Task ID required' })
+        return res.status(400).json({ message: 'Task ID required' });
     }
 
-    // Confirm task exists
-    const task = await Task.findById(id).exec()
+    // Delete task directly and get the deleted document
+    const deletedTask = await Task.findByIdAndDelete(id).exec();
 
-    if (!task) {
-        return res.status(400).json({ message: 'Task not found' })
+    if (!deletedTask) {
+        return res.status(400).json({ message: 'Task not found' });
     }
 
-    const result = await task.deleteOne()
+    const reply = `Task '${deletedTask.title}' with ID ${deletedTask._id} deleted`;
 
-    const reply = `Task '${result.title}' with ID ${result._id} deleted`
+    console.log(reply);
 
-    res.json(reply)
-}
-
+    res.json(reply);
+};
 
 module.exports = {
     getAllTasks,
